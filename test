@@ -733,7 +733,10 @@ local function ShouldGiftPet(pet)
     -- Ambil berat pet (SESUIKAN JIKA BERBEDA)
     local weight =
         pet.Weight
-        
+        or pet.KG
+        or pet:GetAttribute("Weight")
+        or 0
+
     if weight < rule.MinWeight then
         print(
             "SKIPPED (Under KG):",
