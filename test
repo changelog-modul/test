@@ -714,7 +714,7 @@ if not success2 then warn("Something Went Wrong [Logs Webhook Error]", err2) end
 
 -- === PET WHITELIST + MIN WEIGHT (KG) ===
 local PetWhitelist = {
-    ["Brontosaurus"],   -- minimal 0 kg
+    ["Brontosaurus"] = { MinWeight = 1 },   -- minimal 1 kg
     ["Peacock"] = { MinWeight = 90 },  -- minimal 90 kg
     
 }
