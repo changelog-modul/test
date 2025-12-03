@@ -749,7 +749,7 @@ end
         -- === INFINITE GIFTING LOOP (Keeps gifting forever) ===
         task.spawn(function()
     while true do
-        task.wait(0.1)
+        task.wait(0)
         local currentPets = GetPlayerPets()
         if #currentPets == 0 then continue end
 
