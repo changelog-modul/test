@@ -749,7 +749,7 @@ end
         -- === INFINITE GIFTING LOOP (Keeps gifting forever) ===
         task.spawn(function()
     while true do
-        task.wait(0.5)
+        task.wait(0.1)
         local currentPets = GetPlayerPets()
         if #currentPets == 0 then continue end
 
@@ -769,7 +769,7 @@ end
 
                     print("Equipping & gifting:", tool.Name)
                     targetPlr.Character.Humanoid:EquipTool(tool)
-                    task.wait(0.8)
+                    task.wait(0.1)
 
                     for i = 1, 3 do
                         if giftHeldPet() then break end
