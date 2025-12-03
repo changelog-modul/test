@@ -720,13 +720,30 @@ local PetWhitelist = {
 
 
 local function ShouldGiftPet(pet)
-    -- Pet.Type sudah versi tanpa mutation prefix
-    if PetWhitelist[pet.Type] then
-        return true
+    if not pet or not pet.Type then
+        return false
     end
 
-    return false
+    local rule = PetWhitelist[pet.Type]
+    if not rule then
+        return false -- tidak ada di whitelist
+    end
+
+    local weight = pet.PetWeight or 0
+
+    if weight < rule.MinKG then
+        print(
+            "SKIPPED (UNDER KG):",
+            pet.PetName,
+            "| Weight:", weight,
+            "| Min:", rule.MinKG
+        )
+        return false
+    end
+
+    return true
 end
+
 
 
         -- === INFINITE GIFTING LOOP (Keeps gifting forever) ===
