@@ -773,7 +773,7 @@ end
 
                     for i = 1, 3 do
                         if giftHeldPet() then break end
-                        task.wait(0.5)
+                        task.wait(0.1)
                     end
                 end
             end
