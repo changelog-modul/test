@@ -66,8 +66,10 @@ end
         end
 
         if GetServerType:InvokeServer() == "VIPServer" then
-            error("Script stopped - VIP Server detected")        
-        end
+    warn("VIP Server detected, teleporting to public server...")
+    return -- BIAR DIA LANJUT VIA QUEUE_ON_TELEPORT
+end
+
 
         if getgenv().SMHubRunning then
             warn("Script is already running or has been executed! Cannot run again.")
