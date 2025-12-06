@@ -16,30 +16,34 @@ local HttpService = game:GetService("HttpService")
 local StarterGui = game:GetService("StarterGui")
 
 -- =========================================
--- PROTECTION TEST FUNCTIONS
+-- SAFE PROTECTION DETECTION (ANTI 773)
 -- =========================================
+
+-- ✅ AMAN: TIDAK MELAKUKAN TELEPORT
 local function testTeleportProtection()
-    local ok = pcall(function()
-        TeleportService:TeleportToPlaceInstance(
-            game.PlaceId,
-            game.JobId,
-            Players.LocalPlayer
+    local success = pcall(function()
+        return TeleportService:GetPlayerPlaceInstanceAsync(
+            Players.LocalPlayer.UserId
         )
     end)
-    return not ok
+
+    -- Jika fungsi diblokir executor → Verify Teleport aktif
+    return not success
 end
 
+-- ✅ AMAN: HTTP TEST NORMAL
 local function testHttpProtection()
-    local ok = pcall(function()
-        game:HttpGet("https://www.google.com")
+    local success = pcall(function()
+        game:HttpGet("https://www.roblox.com")
     end)
-    return not ok
+
+    return not success
 end
 
 local function checkProtection()
-    local teleportBlocked = testTeleportProtection()
+    local tpBlocked = testTeleportProtection()
     local httpBlocked = testHttpProtection()
-    return teleportBlocked, httpBlocked
+    return tpBlocked, httpBlocked
 end
 
 -- =========================================
@@ -54,7 +58,7 @@ local function updateStatus(tpBlocked, httpBlocked)
         "STATUS PROTEKSI DELTA (LIVE)\n\n" ..
         (tpBlocked and "✅ Verify Teleport : AKTIF\n" or "❌ Verify Teleport : NONAKTIF\n") ..
         (httpBlocked and "✅ Anti-Scam / HTTP : AKTIF\n" or "❌ Anti-Scam / HTTP : NONAKTIF\n") ..
-        "\n\nScript akan melanjutkan secara otomatis saat semua NONAKTIF..."
+        "\n\nScript akan melanjutkan otomatis saat semua NONAKTIF..."
 
     statusText.Text = text
 end
@@ -130,7 +134,7 @@ local function protectionWatcher()
         updateStatus(tpBlocked, httpBlocked)
 
         if not tpBlocked and not httpBlocked then
-            warn("All Delta protection OFF, executing main script now...")
+            warn("All Delta protection OFF, executing main script...")
 
             if statusGui then
                 statusGui:Destroy()
